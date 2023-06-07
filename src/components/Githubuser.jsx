@@ -23,6 +23,10 @@ const MainDiv = styled(Box)({
   flexDirection: "column",
   "@media (min-width: 768px)": {
     width: "573px",
+  },
+
+  "@media (min-width: 1440px)": {
+    width: "730px",
   }
 });
 
@@ -36,6 +40,8 @@ const HeaderDiv = styled(Box)({
 const BrightnessDiv = styled(Box)({
   display: "flex",
   alignItems: "center",
+  columnGap: "16px",
+  cursor: "pointer",
 });
 
 const BrightnessText = styled(Typography)(({ darkmode }) => ({
@@ -92,7 +98,18 @@ const UserNameInput = styled(Input)(({ darkmode }) => ({
       fontWeight: "400",
       lineHeight: "25px",
   },
-  
+
+  "@media (min-width: 1440px)": {
+    width: "440px",
+    '& input::placeholder': {
+      opacity: 1,
+      fontSize: "18px",
+      color: darkmode === "true" ? "#FFFFFF" : "#4B6A9B",
+      fontWeight: "400",
+      lineHeight: "25px",
+  },
+
+  },
 }));
 
 const ErrorMessage = styled(Typography)({
@@ -140,12 +157,19 @@ const SecondPart = styled(Box)(({ darkmode }) => ({
 
     "@media (min-width: 768px)": {
       padding: "40px 40px 44px 40px",
+    },
+    "@media (min-width: 768px)": {
+      padding: "48px",
     }
 }));
 
 const MainInfo = styled(Box)({
     display: "flex",
     columnGap: "20px",
+
+    "@media (min-width: 1440px)": {
+      columnGap: "37px",
+    }
 })
 
 const Avatar = styled("img")({
@@ -190,6 +214,9 @@ const JoinedDate = styled(Typography)(({ darkmode }) => ({
     "@media (min-width: 768px)": {
       fontSize: "15px",
       lineHeight: "22px",
+    },
+    "@media (min-width: 1440px)":{
+      display: "none",
     }
 }));
 
@@ -211,6 +238,9 @@ const InfoText = styled(Typography)(({ darkmode }) => ({
     "@media (min-width: 768px)": {
       fontSize: "15px",
       marginTop: "24px",
+    },
+    "@media (min-width: 1440px)": {
+      marginTop: "-40px",
     }
 }));
 
@@ -273,6 +303,9 @@ const ProfileInfo = styled(Box)({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  "@media (min-width: 1440px)" : {
+    marginTop: "37px",
+  },
 });
 
 const ProfileInfos = styled(Box)({
@@ -317,8 +350,6 @@ const ProfileInfoFirstPart = styled(Box)({
   display: "flex",
   rowGap: "16px",
   flexDirection: "column",
-  "@media (min-width: 768px)" : {
-  }
 });
 
 const ProfileInfoSecondPart = styled(Box)({
@@ -327,7 +358,40 @@ const ProfileInfoSecondPart = styled(Box)({
   flexDirection: "column",
   "@media (min-width: 768px)" : {
   }
-})
+});
+
+const BasicInfoDiv = styled(Box)({
+  "@media (min-width: 1440px)": {
+    marginLeft: "24%",
+  }
+});
+
+const NamesDiv = styled(Box)({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+});
+
+
+const JoinedDateDesktopDiv = styled(Box)({
+  display: "flex",
+  alignItems: "center",
+  whiteSpace: "nowrap",
+  justifyContent: "space-between",
+});
+
+const JoinedDateDesktop = styled(Typography)(({ darkmode }) => ({
+  display: "none",
+  fontWeight: "400",
+  fontSize: "13px",
+  lineHeight: "19px",
+  color: darkmode === "true" ? "#FFFFFF" : "#697C9A",
+  "@media (min-width: 1440px)": {
+    fontSize: "15px",
+    lineHeight: "22px",
+    display: "flex",
+  },
+}));
 
 const Githubuser = () => {
 
@@ -341,6 +405,7 @@ const Githubuser = () => {
     const [userAvatar, setUserAvatar] = useState("");
     const [userLogin, setUserLogin] = useState("");
     const [joinDate, setJoinDate] = useState("");
+    const [bio, setBio] = useState("");
     const [repos, setRepos] = useState("");
     const [followers, setFollowers] = useState("");
     const [following, setFollowing] = useState("");
@@ -349,7 +414,7 @@ const Githubuser = () => {
     const [twitter, setTwitter] = useState("");
     const [company, setCompany] = useState("");
     const [searchUser, setSearchUser] = useState("");
-    const [user, setUser] = useState("Londara1");
+    const [user, setUser] = useState("octocat");
     const [noResult, setNoResult] = useState(false);
 
     const handleInputText = (event) => {
@@ -380,13 +445,14 @@ const Githubuser = () => {
         setWebsite(response.data.blog);
         setTwitter(response.data.twitter_username);
         setCompany(response.data.company);
+        setBio(response.data.bio);
 
         setNoResult((result) => result = false);
         
 
       } catch (error) {
         console.error(error);
-        setNoResult((result) => !result);
+        setNoResult((result) => result = true);
       }
     };
   
@@ -434,16 +500,20 @@ const Githubuser = () => {
                 <Avatar src={userAvatar} alt="" />
             </div>
 
-            <div>
+            <NamesDiv>
+              <JoinedDateDesktopDiv>
                 <StyledUserName darkmode={darkMode.toString()} >{userName}</StyledUserName>
+                <JoinedDateDesktop darkmode={darkMode.toString()}>{formatDate(joinDate)}</JoinedDateDesktop>
+              </JoinedDateDesktopDiv>
+
                 <Login>@{userLogin}</Login>
                 <JoinedDate darkmode={darkMode.toString()}>{formatDate(joinDate)}</JoinedDate>
-            </div>
+            </NamesDiv>
         </MainInfo>
 
 
-        <div>
-            <InfoText darkmode={darkMode.toString()}>No text</InfoText>
+        <BasicInfoDiv>
+            <InfoText darkmode={darkMode.toString()}>{bio ? bio : "This profile has no bio"}</InfoText>
 
             <ProfileStats darkmode={darkMode.toString()}>
                 <StatsDiv>
@@ -500,7 +570,7 @@ const Githubuser = () => {
                 </ProfileInfos>
               </ProfileInfoSecondPart>
             </ProfileInfo>
-        </div>
+        </BasicInfoDiv>
     </SecondPart>
     </MainDiv>
 )}
